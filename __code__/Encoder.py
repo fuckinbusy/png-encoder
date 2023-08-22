@@ -12,9 +12,9 @@ def encode(filePath: str, fileToHide: str):
     
     with open(filePath, 'rb+') as png:
         png.read(8) 
-        CHUNK_TYPE = "IHDR"
+        chunk_type = "IHDR"
 
-        while CHUNK_TYPE != "IEND":
+        while chunk_type != "IEND":
             size = bytesInt(png.read(4))
             type_ = bytesStr(png.read(4))
 
@@ -52,18 +52,18 @@ def encode(filePath: str, fileToHide: str):
             else:
                 png.read(size)
                 bytesHEX(png.read(4))
-                CHUNK_TYPE = type_
+                chunk_type = type_
 
 def decode(filePath: str, newFile: str) -> str:
-    """Decodes only to PNG format.\nReturns decoded file path."""        #TODO!!!!!!!!!!!!!!!!!
+    """Decodes secret data from PNG file.\nReturns decoded file path."""
     print("----------DECODER----------")
     with open(filePath, 'rb') as file:
         file.read(8)
-        CHUNK_TYPE = "IHDR"
-        while CHUNK_TYPE != "IEND":
+        chunk_type = "IHDR"
+        while chunk_type != "IEND":
             size = bytesInt(file.read(4))
             type_ = bytesStr(file.read(4))
-            CHUNK_TYPE = type_
+            chunk_type = type_
 
             if type_ == "riCH":
                 print(f"Secret data found ({size} bytes). Decoding...")
