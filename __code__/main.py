@@ -61,11 +61,10 @@ with open("image.png", 'rb+') as png:
 
 """
 
+
 from Encoder import iterChunks, encode, decode
 from tkinter import filedialog as fd
 from os import system
-
-
 
 def main():
     while True:

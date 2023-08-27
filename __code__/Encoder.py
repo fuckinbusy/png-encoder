@@ -11,6 +11,9 @@ def encode(filePath: str, fileToHide: str):
         return
     
     with open(filePath, 'rb+') as png:
+        png.seek(os.stat(filePath).st_size - 4)
+        EOF_LAST_4_BYTES = png.read()
+        png.seek(0)
         png.read(8) 
         chunk_type = "IHDR"
 
@@ -27,25 +30,35 @@ def encode(filePath: str, fileToHide: str):
                 offset = png.tell()
                 richSize, richCRC = stat(fileToHide).st_size, generateCRC(fileToHide)
 
-                #write SIZE of chunk
+                #Write SIZE of chunk
                 png.write(pack("!i", richSize))
 
-                #write chunk TYPE
+                #Write chunk TYPE
                 png.write(bytearray("riCH", 'ascii'))
 
-                #write data
+                #Write data
                 secret = open(fileToHide, 'rb')
                 secretbytes = secret.read()
                 secret.close()
                 png.write(secretbytes)
 
-                #write chunk CRC
+                #Write chunk CRC
                 crc = pack("!I", richCRC)
                 png.write(bytearray(crc))
 
                 #Write new IEND chunk
-                png.write(pack('!i', 0))
+                png.write(bytearray(pack('!i', 0)))
                 png.write(bytearray("IEND", 'ascii'))
+                png.write(EOF_LAST_4_BYTES)
+
+                """
+                I have no idea what are the last 4 bytes after IEND.
+                WIKI: IEND marks the image end; the data field of the IEND chunk has 0 bytes/is empty.
+                So no information about last 4 bytes, but maybe im just blind or too lazy to read.
+
+                I checked a lot of png files and it seems that they all have the same last 4 bytes
+                and here they are -> AE 42 60 82
+                """
 
                 print(f"riCH chunk ({richSize} bytes) injected at {hex(offset)}")
                 break
