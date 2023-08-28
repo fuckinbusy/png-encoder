@@ -1,4 +1,7 @@
 """
+http://www.libpng.org/pub/png/spec/1.2/PNG-Contents.html
+https://www.w3.org/TR/2003/REC-PNG-20031110/
+
 WIKI EN: https://en.wikipedia.org/wiki/PNG
 
 HOW DOES IT WORK:
